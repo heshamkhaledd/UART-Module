@@ -13,7 +13,7 @@ wire    txBit;
 
 // Initialize all inputs to zero
 initial begin
-clk     = 0;
+clk     = 1;
 txData  = 0;
 txStart = 0;
 end
@@ -26,13 +26,13 @@ always #5 clk = ~clk;
 
 initial begin
 #20
-txData      = 8'b10101010;
+txData      = 8'b01010101;
 txStart     = 1'b1;
-#10 txStart = 1'b0;
+#5 txStart = 1'b0;
 end
 
 initial begin
-#1000
+#100
 $finish;
 end
 endmodule

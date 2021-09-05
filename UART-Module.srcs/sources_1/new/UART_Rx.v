@@ -18,11 +18,11 @@ parameter endState      = 3'b100;
 parameter finishState   = 3'b101;
 
 reg [2:0] currState;
-reg [BUS_WIDTH-1:0] receivedData;
+
 
 integer bitCount;
 
-// Initialize Tx Module at Idle State
+// Initialize Rx Module at Idle State
 initial begin
 currState   = idleState;
 rxBusy      = 1'b0;
@@ -31,15 +31,9 @@ end
 
 always@(posedge clk)
 begin
-
     case(currState)
         idleState: begin
-                    if (rxBit == 1'b1)
-                        begin
-                            rxBusy <= 1'b0;
-                            currState <= idleState;
-                        end
-                    else
+                    if (rxBit != 1'b1)
                         begin
                             rxBusy <= 1'b1;
                             currState <= dataState;
@@ -47,52 +41,47 @@ begin
                    end
                    
         dataState: begin
-                    if (bitCount != BUS_WIDTH)
+                    rxData[bitCount] <= rxBit;
+                    if (bitCount != BUS_WIDTH - 1)
                         begin
-                            receivedData[bitCount] <= rxBit;
                             bitCount = bitCount + 1;
                         end
                     else
                         begin
-                            currState <= dataState;
+                            bitCount <= 0;
+                            currState <= parityState;
                         end
                    end
         
         parityState: begin
-                        case(PARITY)
+                        case (PARITY)
                             1'b1: begin
-                                    if (rxBit == ^receivedData)
+                                    if (rxBit == ^rxData)
                                         begin
                                             frameError <= 1'b0;
-                                            rxData <= receivedData;
-                                            currState <= endState;
                                         end
                                     else
                                         begin
                                             frameError <= 1'b1;
-                                            currState <=endState;
                                         end
-                                  end
+                                    end
                             1'b0: begin
-                                    if (rxBit == ~(^receivedData))
+                                    if (rxBit == ~(^rxData))
                                         begin
                                             frameError <= 1'b0;
-                                            rxData <=receivedData;
-                                            currState <= endState;
                                         end
                                     else
                                         begin
                                             frameError <= 1'b1;
-                                            currState <= endState;
                                         end
                                   end
                         endcase
+                        currState <= endState;
                      end
         
         endState: begin
                     if(STOP_BITS == 2'b01)
                         begin
-                        bitCount <= 0;
                         rxBusy <= 1'b0;
                         currState <= idleState;
                         end
@@ -101,7 +90,6 @@ begin
                     end
                   
        finishState: begin
-                     bitCount <= 0;
                      rxBusy <= 1'b0;
                      currState <= idleState;
                     end

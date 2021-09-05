@@ -25,15 +25,19 @@ parameter endState      = 3'b100;
 parameter finishState   = 3'b101;
 
 reg [2:0] currState;
-reg [BUS_WIDTH-1:0] dataToSend;
-reg txStartBit;
+wire txStartBit;
+wire [BUS_WIDTH-1:0] dataToSend;
+
+
+assign txStartBit = txStart;
+assign dataToSend = txData;
+
 
 integer bitCount;
 
 // Initialize Tx Module at Idle State
 initial begin
 currState   = idleState;
-txStartBit  = 1'b0;
 txBusy      = 0;
 bitCount    = 0;
 end
@@ -41,8 +45,6 @@ end
 
 always@(posedge clk)
 begin
-txStartBit <= txStart;
-dataToSend <= txData;
     case(currState)
         idleState: begin
                     txBit <= 1'b1;
@@ -50,7 +52,6 @@ dataToSend <= txData;
                     if (txStartBit == 1)
                         begin
                         currState <= startState;
-                        txBusy <= 1'b1;
                         end
                      else
                         currState <= idleState;
@@ -58,13 +59,14 @@ dataToSend <= txData;
                    
         startState: begin
                         txBit <= 1'b0;
+                        txBusy <= 1'b1;
                         currState <= dataState;
                     end
                     
         dataState: begin
-                    if (bitCount != BUS_WIDTH)
+                    txBit <= dataToSend[bitCount];
+                    if (bitCount != BUS_WIDTH-1)
                         begin
-                            txBit <= dataToSend[bitCount];
                             bitCount <= bitCount + 1;
                         end
                     else
@@ -91,7 +93,6 @@ dataToSend <= txData;
                     txBit <= 1'b1;
                     if (STOP_BITS == 2'b01)
                         begin
-                            bitCount <= 0;
                             txBusy <= 1'b0;
                             currState <= idleState;
                         end
@@ -103,7 +104,6 @@ dataToSend <= txData;
                         txBit <= 1'b1;
                         txBusy <= 1'b0;
                         currState <= idleState;
-                        bitCount <= 0;
                       end
     endcase
 end

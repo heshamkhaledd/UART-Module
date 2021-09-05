@@ -13,7 +13,7 @@ wire    frameError;
 
 // Initialize all inputs to zero
 initial begin
-clk     = 0;
+clk     = 1;
 rxBit   = 0;
 end
 
@@ -24,10 +24,31 @@ UART_Rx #(8,1,1) DUT_Rx (.clk(clk), .rxBit(rxBit), .rxBusy(rxBusy), .rxData(rxDa
 always #5 clk = ~clk;
 
 initial begin
+rxBit = 1'b0; //Start Bit
+#10
+rxBit = 1'b1; //Data[0]
+#10
+rxBit = 1'b0; //Data[1]
+#10
+rxBit = 1'b1; //Data[2]
+#10
+rxBit = 1'b0; //Data[3]
+#10
+rxBit = 1'b1; //Data[4]
+#10
+rxBit = 1'b0; //Data[5]
+#10
+rxBit = 1'b1; //Data[6]
+#10
+rxBit = 1'b0; //Data[7]
+#10
+rxBit = 1'b0; //Even Parity for 8'b01010101
+#10
+rxBit = 1'b1;
 end
 
 initial begin
-#1000
+#100
 $finish;
 end
 endmodule
