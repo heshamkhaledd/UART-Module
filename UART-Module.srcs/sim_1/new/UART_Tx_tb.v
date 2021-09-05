@@ -19,7 +19,7 @@ txStart = 0;
 end
 
 // UART_Tx Instance
-UART_Tx #(8,1,1) DUT (.clk(clk), .txData(txData), .txStart(txStart), .txBusy(txBusy), .txBit(txBit));
+UART_Tx #(8,1,1) DUT_Tx (.clk(clk), .txData(txData), .txStart(txStart), .txBusy(txBusy), .txBit(txBit));
 
 // Generate Clock of period = 10 ns
 always #5 clk = ~clk;

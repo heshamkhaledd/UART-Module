@@ -16,7 +16,7 @@ module UART_Tx #(parameter BUS_WIDTH = 8, parameter PARITY = 1'b1, parameter STO
         output reg txBit                // Bit to be send on the transmission bus
 );
 
-//UART States
+//UART Transmitter States
 parameter idleState     = 3'b000;
 parameter startState    = 3'b001;
 parameter dataState     = 3'b010; 
@@ -34,8 +34,8 @@ integer bitCount;
 initial begin
 currState   = idleState;
 txStartBit  = 1'b0;
-bitCount    = 0;
 txBusy      = 0;
+bitCount    = 0;
 end
 
 
@@ -91,6 +91,8 @@ dataToSend <= txData;
                     txBit <= 1'b1;
                     if (STOP_BITS == 2'b01)
                         begin
+                            bitCount <= 0;
+                            txBusy <= 1'b0;
                             currState <= idleState;
                         end
                     else
@@ -101,6 +103,7 @@ dataToSend <= txData;
                         txBit <= 1'b1;
                         txBusy <= 1'b0;
                         currState <= idleState;
+                        bitCount <= 0;
                       end
     endcase
 end
