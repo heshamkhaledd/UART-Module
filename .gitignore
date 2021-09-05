@@ -1,0 +1,5 @@
+*
+!*.v
+!*/
+!.gitignore
+UART-Module.sim/sim_1/behav/xsim/glbl.v
