@@ -24,6 +24,8 @@ UART_Rx #(8,1,1) DUT_Rx (.clk(clk), .rxBit(rxBit), .rxBusy(rxBusy), .rxData(rxDa
 always #5 clk = ~clk;
 
 initial begin
+rxBit = 1'b1; //Idle State Bit
+#50
 rxBit = 1'b0; //Start Bit
 #10
 rxBit = 1'b1; //Data[0]
@@ -48,7 +50,7 @@ rxBit = 1'b1;
 end
 
 initial begin
-#100
+#200
 $finish;
 end
 endmodule
