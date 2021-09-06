@@ -12,3 +12,6 @@ Implemented a customizable UART peripheral module that supports different config
 
 ## Simulation Results
 ![Simulation](https://i.imgur.com/xYq4jsH.png)
+
+## Tools Used
+I made the Project on Vivado Design Suite Version: 2019.1
