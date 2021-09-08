@@ -10,11 +10,11 @@ module UART_Rx#(parameter BUS_WIDTH = 8, parameter PARITY = 1'b1, parameter STOP
     );
 
 //UART Receiver States
-parameter idleState     = 3'b000;
-parameter dataState     = 3'b001; 
-parameter parityState   = 3'b010;
-parameter endState      = 3'b011;
-parameter finishState   = 3'b100;
+localparam idleState     = 3'b000;
+localparam dataState     = 3'b001; 
+localparam parityState   = 3'b010;
+localparam endState      = 3'b011;
+localparam finishState   = 3'b100;
 
 reg [2:0] currState;
 

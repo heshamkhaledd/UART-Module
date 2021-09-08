@@ -17,12 +17,12 @@ module UART_Tx #(parameter BUS_WIDTH = 8, parameter PARITY = 1'b1, parameter STO
 );
 
 //UART Transmitter States
-parameter idleState     = 3'b000;
-parameter startState    = 3'b001;
-parameter dataState     = 3'b010; 
-parameter parityState   = 3'b011;
-parameter endState      = 3'b100;
-parameter finishState   = 3'b101;
+localparam idleState     = 3'b000;
+localparam startState    = 3'b001;
+localparam dataState     = 3'b010; 
+localparam parityState   = 3'b011;
+localparam endState      = 3'b100;
+localparam finishState   = 3'b101;
 
 reg [2:0] currState;
 wire txStartBit;
